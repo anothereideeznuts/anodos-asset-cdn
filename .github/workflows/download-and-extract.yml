@@ -1,20 +1,46 @@
 name: Download-and-extract-v2
 
 on:
-  schedule:
-    - cron: '0 2-4 * * 5'
+  workflow_dispatch:
+    inputs:
+      downloadAll:
+        description: 'Force download all (1)'
+        default: '0'
 
 jobs:
-  build:
-    name: Build
+  download-assets:
+    name: Download and extract assets
     env:
       USER_NAME: anothereideeznuts
       USER_EMAIL: another.eidos.cgs@gmail.com
+      BUNDLES_DIR: bundles
+      ARTIFACTS_DIR: artifacts
+      ARTIFACTS_RIPPER_DIR: ripper-output
+      ASSET_RIPPER_VERSION: "0.3.4.0"
+      FINISH_INDICATOR: done
+      ARTIFACTS_BRANCH: netlify-artifacts
     runs-on: windows-2019
     strategy:
       matrix:
         node-version: [22.x]
-        python-version: [3.12]
     steps:
-      - name: test
-        run: echo aaaaaa
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Installation
+        run: |
+          npx yarn install
+
+      - name: Download official bundles
+        id: bundles
+        run: |
+          New-Item -Path . -Name ${env:BUNDLES_DIR} -ItemType directory
+          $Env:DOWNLOAD_ALL = "${{ github.event.inputs.downloadAll }}"
+          npm run download:official-bundles
+          $Env:BUNDLE_COUNT = (Get-ChildItem ${env:BUNDLES_DIR} | Measure-Object).Count
+          Write-Output "BUNDLE_COUNT: ${env:BUNDLE_COUNT}"
+          echo "BUNDLE_COUNT=${env:BUNDLE_COUNT}" >> ${env:GITHUB_ENV}
