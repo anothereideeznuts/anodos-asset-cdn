@@ -1,4 +1,4 @@
-name: Download-and-extract-v2
+name: download-and-extract
 
 on:
   workflow_dispatch:
