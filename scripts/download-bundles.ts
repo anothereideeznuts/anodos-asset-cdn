@@ -16,34 +16,30 @@ const ASSETLIST_PATH = `${appRoot}/version/assetList.Android`;
 const ASSET_REGEX =
   /(skillicons|utage(chr|bg|spr|scenarios)|(weapon(icon|frame))_separate)_assets|characterimage(fs|full)/;
 
-const getVersion = async (options: RequestInit) => {
+async function getVersion(options: RequestInit) {
   const res = await fetch(API_URL, options);
 
   if (res.ok) {
     // { ..., "apps": [{ ... , "version": "4.0.5.0", ... }, ...]}
-    const {
-      apps: [{ version: appVersion }],
-    } = await res.json();
-
-    return appVersion;
+    const resp = (await res.json()) as any;
+    return resp.apps[0].version;
   } else {
-    return {};
+    return "";
   }
-};
+}
 
-const getDiffAssetList = async (options: RequestInit, appVersion: string) => {
+async function getDiffAssetList(options: RequestInit, appVersion: string) {
   const url = `${STATIC_URL}/catalog_2.9.4.json`;
   const res = await fetch(url, options);
 
   // https://api.anothereidos-r.net/download/addressable/Android/utagebg_assets_texture/bg/still01_dyne.asset_eb9df16867f3d0adbc6872b7fd072945.bundle
-
   const listAssets = (raw: string[]) =>
     raw
       .filter((x) => x.match(ASSET_REGEX))
       .map((x) => x.replace(STATIC_URL, ""));
 
   if (res.ok) {
-    const { m_InternalIds: assetList } = await res.json();
+    const { m_InternalIds: assetList } = (await res.json()) as any;
     await fs.writeFile(`${ASSETLIST_PATH}.cache`, assetList.join("\n"));
 
     const currentAssetList = listAssets(assetList);
@@ -57,16 +53,15 @@ const getDiffAssetList = async (options: RequestInit, appVersion: string) => {
       previousAssetList.length = 0;
     }
 
+    console.log(currentAssetList);
+    console.log(previousAssetList);
+
     const differentAssetList = _.differenceBy(
       currentAssetList,
       previousAssetList,
       (x) => {
-        let match = x.match(/\.asset_([0-9a-f])+\.bundle/);
-        if (match?.groups) {
-          return match.groups[1];
-        } else {
-          throw new Error("Invalid asset URL.");
-        }
+        let match = x.match(/_([0-9a-f])+\.bundle/);
+        return match?.groups ? match.groups[1] : "invalid";
       }
     );
 
@@ -76,23 +71,27 @@ const getDiffAssetList = async (options: RequestInit, appVersion: string) => {
   }
 
   return [];
-};
+}
 
-const downloadAsset = async (filePath: string, appVersion: string) => {
+async function downloadAsset(filePath: string, appVersion: string) {
   const url = `${STATIC_URL}/${appVersion}/${filePath}`;
   const res = await fetch(url);
 
   await new Promise((resolve, reject) => {
     const fileStream = fs.createWriteStream(`${BUNDLES_DIR}/${filePath}`);
-    res.body.pipe(fileStream);
-    res.body.on("error", reject);
+    if (res?.body) {
+      res.body.pipe(fileStream);
+      res.body.on("error", reject);
+    } else {
+      throw new Error("No response found.")
+    }
     fileStream.on("finish", resolve);
   });
-};
+}
 
-const main = async () => {
+async function main() {
   // Step 1: get app version info.
-  const { appVersion } = await getVersion(BASE_FETCH_OPTIONS);
+  const appVersion = await getVersion(BASE_FETCH_OPTIONS);
   const options = {
     ...BASE_FETCH_OPTIONS,
     headers: {
@@ -102,7 +101,7 @@ const main = async () => {
   };
 
   // Store the version info.
-  if (!appVersion) {
+  if (appVersion === "") {
     console.warn("Cannot get version from server");
     process.exit(0);
   }
@@ -142,6 +141,6 @@ const main = async () => {
 
   console.log("Download finished");
   console.log("Failed:", failed);
-};
+}
 
 main();
