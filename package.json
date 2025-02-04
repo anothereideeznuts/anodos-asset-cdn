@@ -5,7 +5,8 @@
   "author": "anothereideeznuts",
   "license": "MIT",
   "scripts": {
-    "download:bundles": "tsx scripts/download-bundles.ts"
+    "download:bundles": "tsx scripts/download-bundles.ts",
+    "remove:duplicated-assets": "tsx scripts/remove-duplicated-assets.ts"
   },
   "dependencies": {
     "app-root-path": "^3.1.0",
