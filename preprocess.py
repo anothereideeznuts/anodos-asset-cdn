@@ -49,6 +49,10 @@ class Book:
       for row in scenario["rows"]:
         if row["isEmpty"] == 0:
           S.append(row["strings"])
+
+      if not len(S):
+        continue
+
       header = S[0]
       x = []
       HL = len(header)
