@@ -76,7 +76,6 @@ jobs:
 
       - name: Process JSON files
         if: env.BUNDLE_COUNT != '0'
-        working-directory: ${{ env.ARTIFACTS_DIR }}
         run: |
           python -m pip install Pillow
-          python ..\preprocess.py
+          python preprocess.py

@@ -5,7 +5,7 @@ from PIL import Image
 
 def dumpJson(filename, obj, **kwargs):
   with open(filename, "w", encoding="utf-8", newline="\n") as f:
-    json.dump(obj, f, ensure_ascii=False, indent="", **kwargs)
+    json.dump(obj, f, ensure_ascii=False, indent=2, **kwargs)
 
 def parseJson(filename):
   with open(filename, "r", encoding="utf-8") as f:
@@ -76,9 +76,11 @@ def processMinify(f):
   bg.convert("RGB").save(f.replace(".png", ".jpg"), optimize=True)
 
 if __name__ == '__main__':
-#   forAllCwd("MonoBehaviour", re.compile(r"fg_(\w+)\.json"), processAtlasJson)
+  os.chdir("artifacts")
+  forAllCwd("MonoBehaviour", re.compile(r"fg_(\w+)\.json"), processAtlasJson)
   forAllCwd("MonoBehaviour", re.compile(r"\w+\.book\.json"), Book("book:", "importGridList"))
   forAllCwd("MonoBehaviour", re.compile(r"\w+\.chapter\.json"), Book("chapter:", "settingList"))
+  os.chdir("..")
 
 #   forAllCwd("Sprite", re.compile(r"^banner_.+\.png$"), processMinify)
 #   forAllCwd("Sprite", re.compile(r"^ui_banner_.+\.png$"), processMinify)
