@@ -16,7 +16,7 @@ const ASSETLIST_PATH = `${appRoot}/version/assetList.Android`;
 const ASSET_REGEX_LIST = [
   /(skillicons|utage(chr|spr|scenarios)|(weapon(icon|frame))_separate)_assets/,
   /characterimage(fs|full)/,
-  /utagebg_assets_texture\/bg\/(?!bg_|fullscreen)|(bg_ssf)/
+  /utagebg_assets_texture\/bg\/((?!bg_|fullscreen)|(bg_ssf))/
 ]
 async function getVersion(options: RequestInit) {
   const res = await fetch(API_URL, options);
