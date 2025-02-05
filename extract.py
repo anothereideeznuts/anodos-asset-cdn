@@ -7,7 +7,7 @@ import UnityPy
 
 print("Encoding:", sys.getdefaultencoding())
 
-CLASSES = ["MonoBehaviour", "Sprite", "TextAsset", "Texture2D"]
+CLASSES = ["MonoBehaviour", "Sprite", "TextAsset"]
 
 def unpack_all_assets(src_folder: str, dest_folder: str):
   for c in CLASSES:
@@ -32,15 +32,9 @@ def unpack_all_assets(src_folder: str, dest_folder: str):
         #print(f"::debug::{dest}")
 
         if obj.type.name == "Sprite":
-          dest, _ = os.path.splitext(dest)
+          dest, ext = os.path.splitext(dest)
           dest = dest + ".png"
           data.image.save(dest)
-
-        elif obj.type.name == "Texture2D":
-          dest, _ = os.path.splitext(dest)
-          dest = dest + ".png"
-          if not os.path.exists(dest):
-            data.image.save(dest)
 
         elif obj.type.name == "MonoBehaviour":
           dest, ext = os.path.splitext(dest)
