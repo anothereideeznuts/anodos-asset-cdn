@@ -13,9 +13,11 @@ const BASE_FETCH_OPTIONS = {
 };
 const BUNDLES_DIR = `${appRoot}/bundles`;
 const ASSETLIST_PATH = `${appRoot}/version/assetList.Android`;
-const ASSET_REGEX =
-  /(skillicons|utage(chr|spr|scenarios)|(weapon(icon|frame))_separate)_assets|characterimage(fs|full)|utagebg_assets_texture\/bg\/(?!bg_|fullscreen)/;
-
+const ASSET_REGEX_LIST = [
+  /(skillicons|utage(chr|spr|scenarios)|(weapon(icon|frame))_separate)_assets/,
+  /characterimage(fs|full)/,
+  /utagebg_assets_texture\/bg\/(?!bg_|fullscreen)|(bg_ssf)/
+]
 async function getVersion(options: RequestInit) {
   const res = await fetch(API_URL, options);
 
@@ -35,7 +37,7 @@ async function getDiffAssetList(options: RequestInit, appVersion: string) {
   // https://api.anothereidos-r.net/download/addressable/Android/utagebg_assets_texture/bg/still01_dyne.asset_eb9df16867f3d0adbc6872b7fd072945.bundle
   const listAssets = (raw: string[]) =>
     raw
-      .filter((x) => x.match(ASSET_REGEX))
+      .filter((x) => ASSET_REGEX_LIST.some((r) => x.match(r)))
       .map((x) => x.replace(`${STATIC_URL}/`, ""));
 
   if (res.ok) {
