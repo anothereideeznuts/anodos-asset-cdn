@@ -19,11 +19,11 @@ jobs:
       ASSET_RIPPER_VERSION: "0.3.4.0"
       FINISH_INDICATOR: done
       ARTIFACTS_BRANCH: netlify-artifacts
-      BUNDLE_COUNT: "0"
+      BUNDLE_COUNT: '0'
     runs-on: windows-2019
     strategy:
       matrix:
-        node-version: [22.x]
+        node-version: [22.13.1]
         python-version: [3.13.1]
     steps:
       - uses: actions/checkout@v4.2.2
@@ -41,11 +41,11 @@ jobs:
         id: bundles
         run: |
           New-Item -Path . -Name ${env:BUNDLES_DIR} -ItemType directory
-          $Env:DOWNLOAD_ALL = "${{ github.event.inputs.downloadAll }}"
+          $env:DOWNLOAD_ALL = "${{ github.event.inputs.downloadAll }}"
           npm run download:bundles
-          $Env:BUNDLE_COUNT = (Get-ChildItem ${env:BUNDLES_DIR} | Measure-Object).Count
+          $env:BUNDLE_COUNT = (Get-ChildItem ${env:BUNDLES_DIR} | Measure-Object).Count
           Write-Output "BUNDLE_COUNT: ${env:BUNDLE_COUNT}"
-          echo "BUNDLE_COUNT=${env:BUNDLE_COUNT}" >> ${env:GITHUB_ENV}
+          Write-Output "BUNDLE_COUNT=${env:BUNDLE_COUNT}" >> ${env:GITHUB_ENV}
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5.4.0

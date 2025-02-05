@@ -36,7 +36,7 @@ async function getDiffAssetList(options: RequestInit, appVersion: string) {
   const listAssets = (raw: string[]) =>
     raw
       .filter((x) => x.match(ASSET_REGEX))
-      .map((x) => x.replace(STATIC_URL, ""));
+      .map((x) => x.replace(`${STATIC_URL}/`, ""));
 
   if (res.ok) {
     const { m_InternalIds: assetList } = (await res.json()) as any;
@@ -73,8 +73,8 @@ async function getDiffAssetList(options: RequestInit, appVersion: string) {
   return [];
 }
 
-async function downloadAsset(filePath: string, appVersion: string) {
-  const url = `${STATIC_URL}/${appVersion}/${filePath}`;
+async function downloadAsset(filePath: string) {
+  const url = `${STATIC_URL}/${filePath}`;
   const res = await fetch(url);
 
   await new Promise((resolve, reject) => {
@@ -118,7 +118,7 @@ async function main() {
     const index = i++;
     await fs.mkdirp(`${BUNDLES_DIR}/${dirname(asset)}`);
     try {
-      await downloadAsset(asset, appVersion);
+      await downloadAsset(asset);
       console.log(`[${index} / ${assetList.length}] ${asset}`);
     } catch (e) {
       failed.push(asset);
