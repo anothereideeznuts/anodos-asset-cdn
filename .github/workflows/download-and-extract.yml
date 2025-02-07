@@ -64,7 +64,7 @@ jobs:
         if: env.BUNDLE_COUNT != '0'
         run: |
           cmd /c "curl.exe -L https://github.com/AssetRipper/AssetRipper/releases/download/${env:ASSET_RIPPER_VERSION}/AssetRipper_win_x64.zip > AssetRipper.zip"
-          Expand-Archive -Path AssetRipper.zip -DestinationPath AssetRipper
+          Expand-Archive AssetRipper.zip AssetRipper
           .\AssetRipper\AssetRipper.exe ${env:BUNDLES_DIR} -o ${env:ARTIFACTS_RIPPER_DIR} -q
           (dir -r ${env:ARTIFACTS_RIPPER_DIR}).FullName
           rm ${env:BUNDLES_DIR} -r -force
@@ -79,3 +79,25 @@ jobs:
         run: |
           python -m pip install Pillow
           python preprocess.py
+
+      - name: Oragnize artifacts
+        if: env.BUNDLE_COUNT != '0'
+        run: |
+          Move-Item ${env:ARTIFACTS_DIR}\* . -Force
+
+          New-Item Book -ItemType directory -Force
+          New-Item Texture2D -ItemType directory -Force
+          New-Item VideoClip -ItemType directory -Force
+
+          Move-Item MonoBehaviour\* Book -Include *.book.json,*.chapter.json -Force
+          Get-ChildItem ${env:ARTIFACTS_RIPPER_DIR}\ExportedProject\Assets\UAnados\Resources_moved\Texture\Sprite\* -Include *.mp4 -Recurse | Move-Item -Destination VideoClip -Force
+          Move-Item ${env:ARTIFACTS_RIPPER_DIR}\ExportedProject\Assets\Texture2D\*.png .\Texture2D -Force
+
+      - name: Clean up unnecessary files
+        if: env.BUNDLE_COUNT != '0'
+        run: |
+          Remove-Item AssetRipper.zip -Force
+          Remove-Item ${env:BUNDLES_DIR} -Recurse -Force
+          Remove-Item ${env:ARTIFACTS_DIR} -Recurse -Force
+          Remove-Item ${env:ARTIFACTS_RIPPER_DIR} -Recurse -Force
+          Remove-Item TextAsset -Recurse -Force
