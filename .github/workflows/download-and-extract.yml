@@ -67,7 +67,6 @@ jobs:
           Expand-Archive AssetRipper.zip AssetRipper
           .\AssetRipper\AssetRipper.exe ${env:BUNDLES_DIR} -o ${env:ARTIFACTS_RIPPER_DIR} -q
           (dir -r ${env:ARTIFACTS_RIPPER_DIR}).FullName
-          rm ${env:BUNDLES_DIR} -r -force
 
       - name: Filter assets
         if: env.BUNDLE_COUNT != '0'
