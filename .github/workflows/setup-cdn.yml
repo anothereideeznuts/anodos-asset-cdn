@@ -1,4 +1,4 @@
-name: download-and-extract
+name: Set Up CDN
 
 on:
   workflow_dispatch:
@@ -79,22 +79,27 @@ jobs:
 
       - name: Oragnize artifacts
         if: env.BUNDLE_COUNT != '0'
+        working-directory: ${env:ARTIFACTS_DIR}
         run: |
-          Move-Item ${env:ARTIFACTS_DIR}\* . -Force
-
           New-Item Book -ItemType directory -Force
           New-Item Texture2D -ItemType directory -Force
           New-Item VideoClip -ItemType directory -Force
 
           Move-Item MonoBehaviour\* Book -Include *.book.json,*.chapter.json -Force
-          Get-ChildItem ${env:ARTIFACTS_RIPPER_DIR}\ExportedProject\Assets\UAnados\Resources_moved\Texture\Sprite\* -Include *.mp4 -Recurse | Move-Item -Destination VideoClip -Force
-          Move-Item ${env:ARTIFACTS_RIPPER_DIR}\ExportedProject\Assets\Texture2D\*.png .\Texture2D -Force
+          Get-ChildItem ..\${env:ARTIFACTS_RIPPER_DIR}\ExportedProject\Assets\UAnados\Resources_moved\Texture\Sprite\* -Include *.mp4 -Recurse | Move-Item -Destination VideoClip -Force
+          Move-Item ..\${env:ARTIFACTS_RIPPER_DIR}\ExportedProject\Assets\Texture2D\*.png Texture2D -Force
 
       - name: Clean up unnecessary files
         if: env.BUNDLE_COUNT != '0'
         run: |
           Remove-Item AssetRipper.zip -Force
           Remove-Item ${env:BUNDLES_DIR} -Recurse -Force
-          Remove-Item ${env:ARTIFACTS_DIR} -Recurse -Force
           Remove-Item ${env:ARTIFACTS_RIPPER_DIR} -Recurse -Force
-          Remove-Item TextAsset -Recurse -Force
+          Remove-Item ${env:ARTIFACTS_DIR}\TextAsset -Recurse -Force
+      
+      - name: Run on Netlify
+        env:
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          NETLIFY_AUTH_TOKEN:  ${{ secrets.NETLIFY_AUTH_TOKEN }}
+        run: |
+          npm run netlify -- deploy --dir=${env:ARTIFACTS_DIR} --prod
