@@ -11,8 +11,6 @@ jobs:
   download-assets:
     name: Download and extract assets
     env:
-      USER_NAME: anothereideeznuts
-      USER_EMAIL: another.eidos.cgs@gmail.com
       BUNDLES_DIR: bundles
       ARTIFACTS_DIR: artifacts
       ARTIFACTS_RIPPER_DIR: ripper-output
