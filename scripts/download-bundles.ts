@@ -14,7 +14,7 @@ const BASE_FETCH_OPTIONS = {
 const BUNDLES_DIR = `${appRoot}/bundles`;
 const ASSETLIST_PATH = `${appRoot}/version/assetList.Android`;
 const ASSET_REGEX_LIST = [
-  /(skillicons|utage(chr|spr|scenarios)|(weapon(icon|frame))_separate)_assets/,
+  /(utage(chr|spr|scenarios)|(weapon(icon|frame))_separate)_assets/,
   /characterimage(fs|full)/,
   /utagebg_assets_texture\/bg\/((?!bg_|fullscreen)|(bg_ssf))/
 ]
