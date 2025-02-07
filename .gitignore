@@ -4,10 +4,4 @@ artifacts/*
 AssetRipper/*
 ripper-output/*
 
-Book/*
-MonoBehaviour/*
-Sprite/*
-Texture2D/*
-VideoClip/*
-
 AssetRipper.zip

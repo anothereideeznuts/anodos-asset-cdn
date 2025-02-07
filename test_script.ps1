@@ -21,19 +21,17 @@ Expand-Archive -Path AssetRipper.zip -DestinationPath AssetRipper -Force
 npm run remove:duplicated-assets -- ${ARTIFACTS_DIR}
 python preprocess.py
 
-Move-Item ${ARTIFACTS_DIR}\* . -Force
-
 New-Item Book -ItemType directory -Force
 New-Item Texture2D -ItemType directory -Force
 New-Item VideoClip -ItemType directory -Force
 
-Move-Item MonoBehaviour\* Book -Include *.book.json,*.chapter.json -Force
-Get-ChildItem ${ARTIFACTS_RIPPER_DIR}\ExportedProject\Assets\UAnados\Resources_moved\Texture\Sprite\* -Include *.mp4 -Recurse | Move-Item -Destination VideoClip -Force
-Move-Item ${ARTIFACTS_RIPPER_DIR}\ExportedProject\Assets\Texture2D\*.png .\Texture2D -Force
+Move-Item ${ARTIFACTS_DIR}\MonoBehaviour\* ${ARTIFACTS_DIR}\Book -Include *.book.json,*.chapter.json -Force
+Get-ChildItem ${ARTIFACTS_RIPPER_DIR}\ExportedProject\Assets\UAnados\Resources_moved\Texture\Sprite\* -Include *.mp4 -Recurse | Move-Item -Destination ${ARTIFACTS_DIR}\VideoClip -Force
+Move-Item ${ARTIFACTS_RIPPER_DIR}\ExportedProject\Assets\Texture2D\*.png ${ARTIFACTS_DIR}\Texture2D -Force
 
 Remove-Item Env:\DOWNLOAD_ALL
 Remove-Item AssetRipper.zip -Force
+Remove-Item AssetRipper -Recurse -Force
 Remove-Item ${BUNDLES_DIR} -Recurse -Force
-Remove-Item ${ARTIFACTS_DIR} -Recurse -Force
 Remove-Item ${ARTIFACTS_RIPPER_DIR} -Recurse -Force
-Remove-Item TextAsset -Recurse -Force
+Remove-Item ${ARTIFACTS_DIR}\TextAsset -Recurse -Force

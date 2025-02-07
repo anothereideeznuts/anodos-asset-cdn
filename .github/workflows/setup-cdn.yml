@@ -93,6 +93,7 @@ jobs:
         if: env.BUNDLE_COUNT != '0'
         run: |
           Remove-Item AssetRipper.zip -Force
+          Remove-Item AssetRipper -Recurse -Force
           Remove-Item ${env:BUNDLES_DIR} -Recurse -Force
           Remove-Item ${env:ARTIFACTS_RIPPER_DIR} -Recurse -Force
           Remove-Item ${env:ARTIFACTS_DIR}\TextAsset -Recurse -Force
