@@ -79,7 +79,7 @@ jobs:
 
       - name: Oragnize artifacts
         if: env.BUNDLE_COUNT != '0'
-        working-directory: ${env:ARTIFACTS_DIR}
+        working-directory: ${{ env.ARTIFACTS_DIR }}
         run: |
           New-Item Book -ItemType directory -Force
           New-Item Texture2D -ItemType directory -Force
