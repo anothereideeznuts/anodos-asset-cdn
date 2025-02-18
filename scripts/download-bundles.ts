@@ -14,10 +14,11 @@ const BASE_FETCH_OPTIONS = {
 const BUNDLES_DIR = `${appRoot}/bundles`;
 const ASSETLIST_PATH = `${appRoot}/version/assetList.Android`;
 const ASSET_REGEX_LIST = [
-  /(utage(chr|spr|scenarios)|(weapon(icon|frame))_separate)_assets/,
+  /(utage(chr|spr|scenarios)|(weapon(icon|frame))_separate)|(skillicons)_assets/,
   /characterimage(fs|full)/,
-  /utagebg_assets_texture\/bg\/((?!bg_|fullscreen)|(bg_ssf))/
-]
+  /utagebg_assets_texture\/bg\/((?!bg_|fullscreen)|(bg_ssf))/,
+];
+
 async function getVersion(options: RequestInit) {
   const res = await fetch(API_URL, options);
 
@@ -85,7 +86,7 @@ async function downloadAsset(filePath: string) {
       res.body.pipe(fileStream);
       res.body.on("error", reject);
     } else {
-      throw new Error("No response found.")
+      throw new Error("No response found.");
     }
     fileStream.on("finish", resolve);
   });
