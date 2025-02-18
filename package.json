@@ -22,7 +22,6 @@
     "@types/lodash": "^4.14.162",
     "@types/node": "^14.11.8",
     "@types/node-fetch": "^2.5.7",
-    "netlify-cli": "^18.0.4",
     "typescript": "^5.7.3"
   }
 }
