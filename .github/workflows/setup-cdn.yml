@@ -79,7 +79,7 @@ jobs:
 
       - name: Oragnize artifacts
         if: env.BUNDLE_COUNT != '0'
-        working-directory: ${{ env.ARTIFACTS_DIR }}
+        working-directory: ${env:ARTIFACTS_DIR}
         run: |
           New-Item Book -ItemType directory -Force
           New-Item Texture2D -ItemType directory -Force
@@ -88,6 +88,8 @@ jobs:
           Move-Item MonoBehaviour\* Book -Include *.book.json,*.chapter.json -Force
           Get-ChildItem ..\${env:ARTIFACTS_RIPPER_DIR}\ExportedProject\Assets\UAnados\Resources_moved\Texture\Sprite\* -Include *.mp4 -Recurse | Move-Item -Destination VideoClip -Force
           Move-Item ..\${env:ARTIFACTS_RIPPER_DIR}\ExportedProject\Assets\Texture2D\*.png Texture2D -Force
+
+          Get-ChildItem . -Name -Directory | ForEach-Object { Get-ChildItem . -Name > $_\items }
 
       - name: Clean up unnecessary files
         if: env.BUNDLE_COUNT != '0'
