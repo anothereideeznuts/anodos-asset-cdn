@@ -31,7 +31,7 @@ Move-Item MonoBehaviour\* Book -Include *.book.json,*.chapter.json -Force
 Get-ChildItem ..\${ARTIFACTS_RIPPER_DIR}\ExportedProject\Assets\UAnados\Resources_moved\Texture\Sprite\* -Include *.mp4 -Recurse | Move-Item -Destination VideoClip -Force
 Move-Item ..\${ARTIFACTS_RIPPER_DIR}\ExportedProject\Assets\Texture2D\*.png Texture2D -Force
 
-Get-ChildItem . -Name -Directory | ForEach-Object { Get-ChildItem . -Name > $_\items }
+Get-ChildItem . -Name -Directory | ForEach-Object { Get-ChildItem $_ -Name > $_\items }
 
 Set-Location ..
 
